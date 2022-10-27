@@ -44,6 +44,12 @@ async function run() {
       const cart = await cartCollection.find(query).toArray();
       res.send(cart);
     });
+    app.delete("/cartList/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await cartCollection.deleteOne(query);
+      res.json(result);
+    })
   } finally {
   }
 }
