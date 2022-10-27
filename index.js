@@ -38,10 +38,11 @@ async function run() {
       const result = await cartCollection.insertOne(newCart);
       res.json(result);
     })
-    app.get("/cartList", async (req, res) => {
-      const cursor = cartCollection.find({});
-      const cartList = await cursor.toArray();
-      res.send(cartList);
+    app.get("/cartList/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const cart = await cartCollection.find(query).toArray();
+      res.send(cart);
     });
   } finally {
   }
