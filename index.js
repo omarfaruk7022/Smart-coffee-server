@@ -50,6 +50,11 @@ async function run() {
       const result = await cartCollection.deleteOne(query);
       res.json(result);
     })
+    app.post("/products", async (req, res) => {
+      const newProduct = req.body;
+      const result = await productsCollection.insertOne(newProduct);
+      res.json(result);
+    })
   } finally {
   }
 }
