@@ -21,6 +21,7 @@ async function run() {
     console.log("db connected");
     const productsCollection = client.db("smart-coffee").collection("products");
     const cartCollection = client.db("smart-coffee").collection("cartList");
+    const usersCollection = client.db("smart-coffee").collection("users");
 
     app.get("/products", async (req, res) => {
       const cursor = productsCollection.find({});
@@ -61,6 +62,16 @@ async function run() {
       const result = await productsCollection.deleteOne(query);
       res.json(result);
     })
+    app.post("/users", async (req, res) => {
+      const newUser = req.body;
+      const result = await usersCollection.insertOne(newUser);
+      res.json(result);
+    });
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = await usersCollection.findOne({ email: email });
+      res.send({ data: user });
+    });
   } finally {
   }
 }
