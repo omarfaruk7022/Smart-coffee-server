@@ -22,6 +22,17 @@ async function run() {
     const productsCollection = client.db("smart-coffee").collection("products");
     const cartCollection = client.db("smart-coffee").collection("cartList");
     const usersCollection = client.db("smart-coffee").collection("users");
+    // const verifyAdmin = async (req, res, next) => {
+    //   const requester = req.decoded?.email;
+    //   const requesterAccount = await usersCollection.findOne({
+    //     email: requester,
+    //   });
+    //   if (requesterAccount?.role == "admin") {
+    //     next();
+    //   } else {
+    //     return res.status(403).send({ massage: "Forbidden access " });
+    //   }
+    // };
 
     app.get("/products", async (req, res) => {
       const cursor = productsCollection.find({});
@@ -62,20 +73,60 @@ async function run() {
       const result = await productsCollection.deleteOne(query);
       res.send(result);
     });
-    app.post("/users", async (req, res) => {
-      const newUser = req.body;
-      const result = await usersCollection.insertOne(newUser);
-      res.send(result);
-    });
+    // app.post("/users", async (req, res) => {
+    //   const newUser = req.body;
+    //   const result = await usersCollection.insertOne(newUser);
+    //   res.send(result);
+    // });
+    
     app.get("/users", async (req, res) => {
       const cursor = usersCollection.find({});
       const users = await cursor.toArray();
       res.send(users);
-    })
+    });
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
       const user = await usersCollection.findOne({ email: email });
       res.send({ data: user });
+    });
+    // app.put("/user/:email", async (req, res) => {
+    //   const email = req.params.email;
+    //   const user = req.body;
+    //   const filter = { email: email };
+    //   const options = { upsert: true };
+    //   const updatedDoc = {
+    //     $set: user,
+    //   };
+    //   const result = await userCollection.updateOne(
+    //     filter,
+    //     updatedDoc,
+    //     options
+    //   )
+    //   res.send({result});
+    // });
+    app.get("/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = await usersCollection.findOne({ email: email });
+      const isAdmin = user?.role === "admin";
+      res.send({ admin: isAdmin });
+    });
+    app.put("/users/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const updateDoc = {
+        $set: { role: "admin" },
+      };
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+    app.patch("/users/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const updateDoc = {
+        $set: { role: "user" },
+      };
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
     });
     app.get("/cartList", async (req, res) => {
       const cursor = cartCollection.find({});
