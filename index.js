@@ -73,11 +73,11 @@ async function run() {
       const result = await productsCollection.deleteOne(query);
       res.send(result);
     });
-    // app.post("/users", async (req, res) => {
-    //   const newUser = req.body;
-    //   const result = await usersCollection.insertOne(newUser);
-    //   res.send(result);
-    // });
+    app.post("/users", async (req, res) => {
+      const newUser = req.body;
+      const result = await usersCollection.insertOne(newUser);
+      res.send(result);
+    });
     
     app.get("/users", async (req, res) => {
       const cursor = usersCollection.find({});
