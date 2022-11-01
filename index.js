@@ -22,6 +22,7 @@ async function run() {
     const productsCollection = client.db("smart-coffee").collection("products");
     const cartCollection = client.db("smart-coffee").collection("cartList");
     const usersCollection = client.db("smart-coffee").collection("users");
+    const usersDataCollection = client.db("smart-coffee").collection("usersData");
     // const verifyAdmin = async (req, res, next) => {
     //   const requester = req.decoded?.email;
     //   const requesterAccount = await usersCollection.findOne({
@@ -73,10 +74,20 @@ async function run() {
       const result = await productsCollection.deleteOne(query);
       res.send(result);
     });
-    app.post("/users", async (req, res) => {
-      const newUser = req.body;
-      const result = await usersCollection.insertOne(newUser);
-      res.send(result);
+    app.put("/usersData/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: user,
+      };
+      const result = await usersDataCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      )
+      res.send({result});
     });
     
     app.get("/users", async (req, res) => {
@@ -84,26 +95,42 @@ async function run() {
       const users = await cursor.toArray();
       res.send(users);
     });
+    app.get("/usersData", async (req, res) => {
+      const cursor = usersDataCollection.find({});
+      const users = await cursor.toArray();
+      res.send(users);
+    });
+    app.get("/usersData/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await usersDataCollection.findOne(query);
+      res.send(user);
+    })
+    // app.get("/usersData/:email", async (req, res) => {
+    //   const email = req.params.email;
+    //   const user = await usersDataCollection.findOne({ email: email });
+    //   res.send({ data: user });
+    // });
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
       const user = await usersCollection.findOne({ email: email });
       res.send({ data: user });
     });
-    // app.put("/user/:email", async (req, res) => {
-    //   const email = req.params.email;
-    //   const user = req.body;
-    //   const filter = { email: email };
-    //   const options = { upsert: true };
-    //   const updatedDoc = {
-    //     $set: user,
-    //   };
-    //   const result = await userCollection.updateOne(
-    //     filter,
-    //     updatedDoc,
-    //     options
-    //   )
-    //   res.send({result});
-    // });
+    app.put("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: user,
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      )
+      res.send({result});
+    });
     app.get("/admin/:email", async (req, res) => {
       const email = req.params.email;
       const user = await usersCollection.findOne({ email: email });
@@ -128,6 +155,7 @@ async function run() {
       const result = await usersCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
+    
     app.get("/cartList", async (req, res) => {
       const cursor = cartCollection.find({});
       const cart = await cursor.toArray();
