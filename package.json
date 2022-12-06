@@ -9,7 +9,9 @@
   "name": "smart-coffee-server",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "tailwindcss": "^3.2.4"
+  },
   "scripts": {
     "start": "node index.js",
     "start-dev": "nodemon index.js",

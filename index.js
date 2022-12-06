@@ -23,6 +23,7 @@ async function run() {
     const cartCollection = client.db("smart-coffee").collection("cartList");
     const usersCollection = client.db("smart-coffee").collection("users");
     const usersDataCollection = client.db("smart-coffee").collection("usersData");
+    const deliveredCollection = client.db("smart-coffee").collection("delivered");
     // const verifyAdmin = async (req, res, next) => {
     //   const requester = req.decoded?.email;
     //   const requesterAccount = await usersCollection.findOne({
@@ -171,6 +172,7 @@ async function run() {
       const result = await cartCollection.updateOne(query, updateDoc);
       res.send(result);
     });
+    
   } finally {
   }
 }
