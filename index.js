@@ -24,17 +24,7 @@ async function run() {
     const usersCollection = client.db("smart-coffee").collection("users");
     const usersDataCollection = client.db("smart-coffee").collection("usersData");
     const deliveredCollection = client.db("smart-coffee").collection("delivered");
-    // const verifyAdmin = async (req, res, next) => {
-    //   const requester = req.decoded?.email;
-    //   const requesterAccount = await usersCollection.findOne({
-    //     email: requester,
-    //   });
-    //   if (requesterAccount?.role == "admin") {
-    //     next();
-    //   } else {
-    //     return res.status(403).send({ massage: "Forbidden access " });
-    //   }
-    // };
+ 
 
     app.get("/products", async (req, res) => {
       const cursor = productsCollection.find({});
