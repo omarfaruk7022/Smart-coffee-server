@@ -26,6 +26,7 @@ async function run() {
     const deliveredCollection = client.db("smart-coffee").collection("delivered");
  
 
+    
     app.get("/products", async (req, res) => {
       const cursor = productsCollection.find({});
       const products = await cursor.toArray();
